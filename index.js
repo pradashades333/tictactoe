@@ -52,7 +52,7 @@ const gameBoard = (function () {
     };
 
 
-    return {getBoard,placeMaker,printBoard}
+    return {getBoard,placeMaker,printBoard, checkWinner, checkTie}
 })();
 
 
@@ -91,7 +91,7 @@ const gameController = (function(){
             const winner = gameBoard.checkWinner()
 
             if (winner) {
-                console.log('Player ${winner} wins');
+                console.log(`Player ${winner} wins`);
                 return;   
             }
 
@@ -129,10 +129,48 @@ const displayController = (() => {
 
     const addSquareListeners = () => {
         const squares = document.querySelectorAll(".square")
+
+        squares.forEach(square => {
+            square.addEventListener('click', () => {
+                const squareIndex = Number(square.dataset.index)
+                gameController.playRound(squareIndex)
+                updateDisplay();
+                updateTurnDisplay();
+            })
+
+        })
     }
 
-    return{renderBoard}
+    const updateDisplay = () => {
+        const board = gameBoard.getBoard()
+        const squares = document.querySelectorAll('.square');
+
+        squares.forEach((square, index) => {
+            square.textContent = board[index];
+        });
+    }
+
+    const updateTurnDisplay = () => {
+        const winner = gameBoard.checkWinner();
+        const tie = gameBoard.checkTie();
+        
+        if (winner) {
+            turnDisplay.textContent = `Player ${winner} wins!`;
+        } else if (tie) {
+            turnDisplay.textContent = "It's a tie!";
+        } else {
+            const currentPlayer = gameController.activePlayer().getMarker();
+            turnDisplay.textContent = `Player ${currentPlayer}'s turn`;
+        }
+    };
+
+
+
+    return{renderBoard, addSquareListeners, updateDisplay, updateTurnDisplay}
 
 })();
 
 
+displayController.renderBoard();
+displayController.addSquareListeners();
+displayController.updateTurnDisplay();
