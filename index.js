@@ -110,3 +110,29 @@ const gameController = (function(){
 
 })();
 
+
+const displayController = (() => {
+    const boardDiv = document.getElementById("game-board")
+    const turnDisplay = document.getElementById("turn-display")
+    const restart = document.getElementById("restart-btn")
+
+    const renderBoard = () => {
+        for (let i = 0; i <9; i++){
+            const square = document.createElement('div');
+            square.classList.add('square')
+            square.dataset.index = i;
+            boardDiv.appendChild(square);
+        }
+
+    }
+
+
+    const addSquareListeners = () => {
+        const squares = document.querySelectorAll(".square")
+    }
+
+    return{renderBoard}
+
+})();
+
+
