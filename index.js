@@ -51,8 +51,12 @@ const gameBoard = (function () {
         return true; 
     };
 
+    const resetBoard = () => {
+        board = ["", "", "", "", "", "", "", "", ""];
+    }
 
-    return {getBoard,placeMaker,printBoard, checkWinner, checkTie}
+
+    return {getBoard,placeMaker,printBoard, checkWinner, checkTie, resetBoard}
 })();
 
 
@@ -106,7 +110,12 @@ const gameController = (function(){
     
     }
 
-     return { activePlayer, playRound, switchTurn }
+    const resetGame = () => {
+        gameBoard.resetBoard();
+        turnPlayer = players[0];
+    };
+
+     return { activePlayer, playRound, switchTurn, resetGame }
 
 })();
 
@@ -164,7 +173,13 @@ const displayController = (() => {
         }
     };
 
+    
 
+    restart.addEventListener('click', () => {
+        gameController.resetGame();
+        updateDisplay();
+        updateTurnDisplay();
+    });
 
     return{renderBoard, addSquareListeners, updateDisplay, updateTurnDisplay}
 
