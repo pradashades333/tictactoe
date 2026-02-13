@@ -36,19 +36,19 @@ const gameBoard = (function () {
                 board[combo[0]] === board[combo[1]] &&
                 board[combo[1]] === board[combo[2]] ){
                 return board[combo[0]]
-            } 
+            }
         }
 
         return null;
     }
 
     const checkTie = () => {
-        for (let space of board) { 
+        for (let space of board) {
             if (space === "") {
-                return false; 
+                return false;
             }
         }
-        return true; 
+        return true;
     };
 
     const resetBoard = () => {
@@ -64,18 +64,23 @@ function createPlayer (name, marker){
     const getName = () => name;
     const getMarker = () => marker;
 
- 
+
     return{getName, getMarker}
 }
 
 const gameController = (function(){
-    const players = [
-        createPlayer("Bob", "X"),
-        createPlayer("James", "O")
-    ]
+    let players = [
+        createPlayer("Player 1", "X"),
+        createPlayer("Player 2", "O")
+    ];
 
     let turnPlayer = players[0];
 
+    const setPlayers = (name1, name2) => {
+        players[0] = createPlayer(name1, "X");
+        players[1] = createPlayer(name2, "O");
+        turnPlayer = players[0];
+    };
 
     const switchTurn = () => {
     if (turnPlayer === players[0]) {
@@ -96,7 +101,7 @@ const gameController = (function(){
 
             if (winner) {
                 console.log(`Player ${winner} wins`);
-                return;   
+                return;
             }
 
             if (gameBoard.checkTie()){
@@ -107,7 +112,7 @@ const gameController = (function(){
 
             switchTurn();
         }
-    
+
     }
 
     const resetGame = () => {
@@ -115,15 +120,40 @@ const gameController = (function(){
         turnPlayer = players[0];
     };
 
-     return { activePlayer, playRound, switchTurn, resetGame }
+     return { activePlayer, playRound, switchTurn, resetGame, setPlayers }
 
 })();
 
 
 const displayController = (() => {
+    const nameScreen = document.getElementById("name-screen")
+    const gameContainer = document.getElementById("game-container")
     const boardDiv = document.getElementById("game-board")
     const turnDisplay = document.getElementById("turn-display")
     const restart = document.getElementById("restart-btn")
+    const startBtn = document.getElementById("start-btn")
+    const player1Input = document.getElementById("player1-name")
+    const player2Input = document.getElementById("player2-name")
+
+    const startGame = () => {
+        const name1 = player1Input.value.trim() || "Player 1";
+        const name2 = player2Input.value.trim() || "Player 2";
+        gameController.setPlayers(name1, name2);
+
+        nameScreen.classList.add("hidden");
+        gameContainer.classList.remove("hidden");
+
+        updateTurnDisplay();
+    };
+
+    startBtn.addEventListener('click', startGame);
+
+    player1Input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') player2Input.focus();
+    });
+    player2Input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') startGame();
+    });
 
     const renderBoard = () => {
         for (let i = 0; i <9; i++){
@@ -162,18 +192,20 @@ const displayController = (() => {
     const updateTurnDisplay = () => {
         const winner = gameBoard.checkWinner();
         const tie = gameBoard.checkTie();
-        
+
         if (winner) {
-            turnDisplay.textContent = `Player ${winner} wins!`;
+            const winnerName = gameController.activePlayer().getName();
+            turnDisplay.textContent = `${winnerName} wins!`;
         } else if (tie) {
             turnDisplay.textContent = "It's a tie!";
         } else {
-            const currentPlayer = gameController.activePlayer().getMarker();
-            turnDisplay.textContent = `Player ${currentPlayer}'s turn`;
+            const currentName = gameController.activePlayer().getName();
+            const currentMarker = gameController.activePlayer().getMarker();
+            turnDisplay.textContent = `${currentName} (${currentMarker})'s turn`;
         }
     };
 
-    
+
 
     restart.addEventListener('click', () => {
         gameController.resetGame();
@@ -188,4 +220,3 @@ const displayController = (() => {
 
 displayController.renderBoard();
 displayController.addSquareListeners();
-displayController.updateTurnDisplay();

@@ -8,13 +8,29 @@
 
 </head>
 <body>
-    <div class="game-container">
+    <div class="name-screen" id="name-screen">
         <h1>tic-tac-toe</h1>
-        
+        <p class="name-subtitle">Enter player names</p>
+        <div class="name-inputs">
+            <div class="name-field">
+                <label for="player1-name">Player X</label>
+                <input type="text" id="player1-name" placeholder="Player 1" maxlength="12">
+            </div>
+            <div class="name-field">
+                <label for="player2-name">Player O</label>
+                <input type="text" id="player2-name" placeholder="Player 2" maxlength="12">
+            </div>
+        </div>
+        <button id="start-btn">Start Game</button>
+    </div>
+
+    <div class="game-container hidden" id="game-container">
+        <h1>tic-tac-toe</h1>
+
         <div class="turn-display" id="turn-display">Player X's turn</div>
-        
+
         <div class="board" id="game-board"></div>
-        
+
         <button id="restart-btn">Restart Game</button>
     </div>
 
